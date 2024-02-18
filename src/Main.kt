@@ -15,10 +15,33 @@ fun main() {
                 println("\nListado de productos:")
                 for(i in 0 until productos.size){
                     println((i+1).toString() + ". " + productos[i].nombre +
-                            " (Marca: " + productos[i].marca + ") - $" + productos[i].precio)
+                            " (Marca: " + productos[i].marca + ") - $" + productos[i].precio +
+                            " (Unidades Disponibles: " + productos[i].stock + ")")
                 }
 
-                repetir = false
+                println("\n----------")
+                println("¿Desea agregar productos al carrito?")
+                println("1. Sí")
+                println("2. No")
+                print("Escoja una opción: ")
+
+                var agregarProductos:Int = readLine()?.toIntOrNull()?:0
+
+                when(agregarProductos) {
+                    1 -> {
+                        //Agregar productos al carro
+                    }
+
+                    2 -> {
+                        repetir = true;
+                        println("\n")
+                    }
+
+                    else -> {
+                        println("\nOpción inválida.\n")
+                        repetir = true
+                    }
+                }
             }
 
             2 -> {
@@ -31,6 +54,7 @@ fun main() {
 
             4 -> {
                 repetir = false
+                println("----------\n¡Hasta pronto!")
                 System.exit(0)
             }
 
