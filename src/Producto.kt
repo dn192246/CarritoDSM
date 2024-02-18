@@ -1,6 +1,3 @@
-class Producto(nombre:String, marca:String, precio:Double, stock:Int) {
-    private var nombre:String = nombre;
-    private var marca:String = marca;
-    private var precio:Double = precio;
-    private var stock:Int = stock;
+class Producto(var nombre:String, var marca:String, var precio:Double, var stock:Int) {
+
 }
