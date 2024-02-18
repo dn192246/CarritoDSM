@@ -30,6 +30,40 @@ fun main() {
                 when(agregarProductos) {
                     1 -> {
                         //Agregar productos al carro
+                        println("\n--------------------")
+                        print("\nDigite el número de producto a agregar: ")
+                        var productoEscogido = readLine()?.toIntOrNull()?:0;
+
+                        if(productoEscogido < 1 || productoEscogido>(productos.size+1)){
+                            println("El producto no existe. Intente nuev    amente.\n");
+                            repetir = true;
+                        }
+                        else{
+                            println("¿Desea agregar " + productos[productoEscogido-1].nombre + " al carrito?")
+                            println("1. Sí")
+                            println("2. No\n")
+
+                            print("Escoja una opción: ")
+                            var agregar:Int = readLine()?.toIntOrNull()?:0
+
+                            if(agregar==1){
+                                print("\nDigite la cantidad a agregar: ")
+                                var cantidad:Int = readLine()?.toIntOrNull()?:0;
+
+                                if(cantidad > productos[productoEscogido-1].stock){
+                                    println("La cantidad solicitada es mayor al stock disponible\n")
+                                }
+                                else{
+                                    productos[productoEscogido-1].stock -= cantidad;
+                                    println("--El producto se ha agregado satisfactoriamente.\n")
+                                }
+                                repetir = true
+                            }
+                            else{
+                                println("\nOpción inválida")
+                                repetir = true
+                            }
+                        }
                     }
 
                     2 -> {
