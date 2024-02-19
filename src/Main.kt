@@ -1,5 +1,9 @@
+import java.text.DecimalFormat
+
 fun main() {
     var productos:MutableList<Producto> = crearProductos()
+    var carrito:MutableList<Item> = mutableListOf()
+    var total:Double = 0.0
 
     println("\n------Bienvenido/a a la tienda digital------")
     println("\tA continuación, escoja una opción:\n")
@@ -55,6 +59,10 @@ fun main() {
                                 }
                                 else{
                                     productos[productoEscogido-1].stock -= cantidad;
+                                    val idProducto:Int = productoEscogido -1
+                                    val cantidadSeleccionada:Int = cantidad;
+
+                                    carrito.add(Item(idProducto,cantidadSeleccionada))
                                     println("--El producto se ha agregado satisfactoriamente.\n")
                                 }
                                 repetir = true
@@ -67,6 +75,7 @@ fun main() {
                     }
 
                     2 -> {
+                        //No agregar productos al carrito
                         repetir = true;
                         println("\n")
                     }
@@ -79,7 +88,25 @@ fun main() {
             }
 
             2 -> {
-                repetir = false
+                //Ver carrito
+                if(carrito.size>0){
+
+                    total = 0.0
+                    println("------------------\nCarrito:\n")
+                    for(i in 0 until carrito.size){
+                        println((i+1).toString() + ". " + productos[carrito[i].idProducto].nombre +
+                                " - Cantidad: " + carrito[i].cantidadProducto)
+                        total += productos[carrito[i].idProducto].precio.toDouble() * carrito[i].cantidadProducto
+                    }
+
+                    val formato = DecimalFormat("#.##")
+                    var totalFinal:String = formato.format(total)
+                    println("\nTotal: $" + totalFinal)
+                    println("")
+                }
+                else{
+                    println("\nNo hay productos en el carrito\n")
+                }
             }
 
             3 -> {
