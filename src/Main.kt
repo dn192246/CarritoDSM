@@ -1,10 +1,10 @@
 import java.text.DecimalFormat
 
-fun main() {
-    var productos:MutableList<Producto> = crearProductos()
-    var carrito:MutableList<Item> = mutableListOf()
-    var total:Double = 0.0
+var productos:MutableList<Producto> = crearProductos()
+var carrito:MutableList<Item> = mutableListOf()
+var total:Double = 0.0
 
+fun main() {
     println("\n------Bienvenido/a a la tienda digital------")
     println("\tA continuación, escoja una opción:\n")
     var repetir:Boolean = true;
@@ -16,12 +16,8 @@ fun main() {
 
         when (opcion){
             1 -> {
-                println("\nListado de productos:")
-                for(i in 0 until productos.size){
-                    println((i+1).toString() + ". " + productos[i].nombre +
-                            " (Marca: " + productos[i].marca + ") - $" + productos[i].precio +
-                            " (Unidades Disponibles: " + productos[i].stock + ")")
-                }
+                //Ver y Agregar Productos al Carrito
+                mostrarProductos()
 
                 println("\n----------")
                 println("¿Desea agregar productos al carrito?")
@@ -33,80 +29,24 @@ fun main() {
 
                 when(agregarProductos) {
                     1 -> {
-                        //Agregar productos al carro
-                        println("\n--------------------")
-                        print("\nDigite el número de producto a agregar: ")
-                        var productoEscogido = readLine()?.toIntOrNull()?:0;
-
-                        if(productoEscogido < 1 || productoEscogido>(productos.size+1)){
-                            println("El producto no existe. Intente nuev    amente.\n");
-                            repetir = true;
-                        }
-                        else{
-                            println("¿Desea agregar " + productos[productoEscogido-1].nombre + " al carrito?")
-                            println("1. Sí")
-                            println("2. No\n")
-
-                            print("Escoja una opción: ")
-                            var agregar:Int = readLine()?.toIntOrNull()?:0
-
-                            if(agregar==1){
-                                print("\nDigite la cantidad a agregar: ")
-                                var cantidad:Int = readLine()?.toIntOrNull()?:0;
-
-                                if(cantidad > productos[productoEscogido-1].stock){
-                                    println("La cantidad solicitada es mayor al stock disponible\n")
-                                }
-                                else{
-                                    productos[productoEscogido-1].stock -= cantidad;
-                                    val idProducto:Int = productoEscogido -1
-                                    val cantidadSeleccionada:Int = cantidad;
-
-                                    carrito.add(Item(idProducto,cantidadSeleccionada))
-                                    println("--El producto se ha agregado satisfactoriamente.\n")
-                                }
-                                repetir = true
-                            }
-                            else{
-                                println("\nOpción inválida")
-                                repetir = true
-                            }
-                        }
+                       //El usuario busca agregar productos al carrito
+                        agregarAlCarrito()
                     }
 
                     2 -> {
                         //No agregar productos al carrito
-                        repetir = true;
                         println("\n")
                     }
 
                     else -> {
                         println("\nOpción inválida.\n")
-                        repetir = true
                     }
                 }
             }
 
             2 -> {
-                //Ver carrito
-                if(carrito.size>0){
-
-                    total = 0.0
-                    println("------------------\nCarrito:\n")
-                    for(i in 0 until carrito.size){
-                        println((i+1).toString() + ". " + productos[carrito[i].idProducto].nombre +
-                                " - Cantidad: " + carrito[i].cantidadProducto)
-                        total += productos[carrito[i].idProducto].precio.toDouble() * carrito[i].cantidadProducto
-                    }
-
-                    val formato = DecimalFormat("#.##")
-                    var totalFinal:String = formato.format(total)
-                    println("\nTotal: $" + totalFinal)
-                    println("")
-                }
-                else{
-                    println("\nNo hay productos en el carrito\n")
-                }
+                //Se muestran los productos en el carrito
+                mostrarCarrito()
             }
 
             3 -> {
@@ -153,4 +93,159 @@ fun crearProductos(): MutableList<Producto>{
     productos.add(Producto("Shampoo Hidratante", "Belleza Natural", 3.99, 30))
 
     return productos;
+}
+
+fun mostrarCarrito(){
+    //Ver carrito
+    if(carrito.size>0){
+        //Se valida que hay productos en el carrito
+        total = 0.0
+        println("------------------\nCarrito:\n")
+        for(i in 0 until carrito.size){
+            println((i+1).toString() + ". " + productos[carrito[i].idProducto].nombre +
+                    " - Cantidad: " + carrito[i].cantidadProducto)
+            total += productos[carrito[i].idProducto].precio.toDouble() * carrito[i].cantidadProducto
+        }
+
+        val formato = DecimalFormat("#.##")
+        var totalFinal:String = formato.format(total)
+        println("\nTotal: $" + totalFinal)
+        println("\n¿Desea eliminar productos del carrito?")
+        println("1. Sí")
+        println("2. No")
+        print("Escoja una opción: ")
+        var opcion:Int = readLine()?.toIntOrNull()?:0
+
+        when(opcion){
+            1->{
+                eliminarDelCarrito()
+            }
+            2->{
+                println("\n")
+            }
+            else->{
+                println("\n")
+            }
+        }
+    }
+    else{
+        //No hay productos agregados al carrito aún
+        println("\nNo hay productos en el carrito\n")
+    }
+}
+
+fun mostrarProductos(){
+    println("\nListado de productos:")
+    for(i in 0 until productos.size){
+        println((i+1).toString() + ". " + productos[i].nombre +
+                " (Marca: " + productos[i].marca + ") - $" + productos[i].precio +
+                " (Unidades Disponibles: " + productos[i].stock + ")")
+    }
+}
+
+fun eliminarDelCarrito(){
+    print("\nIndique el número de producto a eliminar del carrito (0 para cancelar): ")
+    var numProducto:Int = readLine()?.toIntOrNull()?:-1
+    if(numProducto <0 || numProducto>(carrito.size+1)){
+        //El producto no existe en el carrito
+        println("El número de producto del carrito no es correcto. Intente nuevamente.\n");
+    }
+    else if(numProducto==0){
+        //El usuario decide no eliminar un producto del carrito
+        println("\nOperación cancelada\n\n")
+    }
+    else{
+        //Se escoge un producto correctamente para eliminar del carrito
+        println("\n¿Desea eliminar " + productos[carrito[numProducto-1].idProducto].nombre +
+                " del carrito de compras? Esta acción no puede deshacerse.\n" +
+                "Ingrese 1 para confirmar. Ingrese cualquier otro valor para cancelar.")
+        var opcion:Int = readLine()?.toIntOrNull()?:0
+
+        if(opcion == 1){
+            carrito.removeAt(numProducto-1)
+            println("\n--El producto fue eliminado del carrito\n")
+        }
+        else{
+            println("\n--El producto no fue eliminado del carrito\n")
+        }
+    }
+}
+
+fun agregarAlCarrito(){
+    //Intentar gregar productos al carro
+    println("\n--------------------")
+    print("\nDigite el número de producto a agregar: ")
+    var productoEscogido = readLine()?.toIntOrNull()?:0;
+
+    if(productoEscogido < 1 || productoEscogido>(productos.size+1)){
+        //El producto no existe
+        println("El producto no existe. Intente nuevamente.\n");
+    }
+    else{
+        //Confirmación para agregar el producto
+        println("¿Desea agregar " + productos[productoEscogido-1].nombre + " al carrito?")
+        println("1. Sí")
+        println("2. No\n")
+
+        print("Escoja una opción: ")
+        var agregar:Int = readLine()?.toIntOrNull()?:0
+
+        when(agregar){
+            1->{
+                //Se confirma agregar el producto y se solicita la cantidad
+                print("\nDigite la cantidad a agregar: ")
+                var cantidad:Int = readLine()?.toIntOrNull()?:0;
+
+                if(cantidad>0){
+                    //Se ha validado que el usuario escogió una cantidad válida (positva)
+                    if(cantidad > productos[productoEscogido-1].stock) {
+                        //El usuario desea agregar más productos de los disponibles
+                        println("La cantidad solicitada es mayor al stock disponible\n")
+                    }
+                    else{
+                        //Se verifica, inicialmente, si el producto ya estaba en el carrito
+                        var existe:Boolean = false
+                        var index:Int=0;
+                        for(i in 0 until carrito.size){
+                            //Se revisan todos los productos en el carrito para ver si hay una coincidencia
+                            if(carrito[i].idProducto == productoEscogido-1){
+                                existe= true
+                                index = i
+                                break
+                            }
+                        }
+
+                        //Se resta la cantidad dentro del stock de productos
+                        productos[productoEscogido-1].stock -= cantidad
+
+                        if(existe){
+                            //El producto ya había sido escogido antes en el carrito
+                            carrito[index].cantidadProducto+=cantidad
+                            println("--El producto se ha modificado satisfactoriamente.\n")
+                        }
+                        else{
+                            //El producto no existía en el carrito
+                            val idProducto:Int = productoEscogido -1
+                            val cantidadSeleccionada:Int = cantidad;
+
+                            carrito.add(Item(idProducto,cantidadSeleccionada))
+                            println("--El producto se ha agregado satisfactoriamente.\n")
+                        }
+                    }
+                }
+                else{
+                    println("\nDebe agregar una cantidad válida.\n\n")
+                }
+
+            }
+            2->{
+                //El usuario elige no agregar el producto al carro
+                println("\n")
+            }
+            else->{
+                //Se ha escogido una opción inválida
+                println("\nOpción inválida\n")
+            }
+        }
+    }
 }
