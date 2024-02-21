@@ -50,7 +50,8 @@ fun main() {
             }
 
             3 -> {
-                repetir = false
+                //Se finaliza la compra
+                generarFactura()
             }
 
             4 -> {
@@ -162,6 +163,8 @@ fun eliminarDelCarrito(){
         var opcion:Int = readLine()?.toIntOrNull()?:0
 
         if(opcion == 1){
+            //Se vuelve a agregar el producto al stock
+            productos[carrito[numProducto-1].idProducto].stock += carrito[numProducto-1].cantidadProducto
             carrito.removeAt(numProducto-1)
             println("\n--El producto fue eliminado del carrito\n")
         }
@@ -248,4 +251,50 @@ fun agregarAlCarrito(){
             }
         }
     }
+}
+
+fun generarFactura(){
+
+    if(carrito.size>0){
+        //Se valida que hay productos en el carrito
+        total = 0.0
+        println("\n\n---------------------------")
+        println("\n\t----Factura----")
+        println("Listado de productos:")
+        for(i in 0 until carrito.size){
+            println((i+1).toString() + ". " + productos[carrito[i].idProducto].nombre +
+                    " - Cantidad: " + carrito[i].cantidadProducto)
+            total += productos[carrito[i].idProducto].precio.toDouble() * carrito[i].cantidadProducto
+        }
+
+        val formato = DecimalFormat("#.##")
+        var totalFinal:String = formato.format(total)
+        println("\nTotal: $" + totalFinal)
+
+        println("\n\tGracias por su compra")
+        println("----------------------------\n\n")
+
+        carrito.clear();
+
+        println("¿Desea realizar otra compra?")
+        println("1. Sí")
+        println("2. No")
+        print("Escoja una opción: ")
+        var opcion:Int = readLine()?.toIntOrNull()?:0
+
+        when(opcion){
+            2->{
+                println("\nGracias por preferirnos\n")
+                System.exit(0)
+            }
+            else ->{
+                println("\n")
+            }
+        }
+    }
+    else{
+        //No hay productos agregados al carrito aún
+        println("\nNo hay productos en el carrito para finalizar la compra\n")
+    }
+
 }
